@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форматирование номеров</title>
+    <script>
+        function submitForm() {
+            // Получаем содержимое textarea
+            var numbers = document.getElementById('phoneNumbers').value;
+            
+            // Отправляем POST-запрос на сервер Flask
+            fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({phone_numbers: numbers}),
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                // Создаем ссылку на скачивание файла
+                var url = window.URL.createObjectURL(blob);
+                
+                // Создаем ссылку для скачивания файла
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = 'phone_numbers.xlsx';
+                
+                // Добавляем ссылку на страницу и нажимаем на нее
+                document.body.appendChild(a);
+                a.click();
+                
+                // Очищаем ссылку
+                window.URL.revokeObjectURL(url);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="main">
+        <h1>Input</h1>
+        <textarea id="phoneNumbers" cols="30" rows="10"></textarea>
+        <button onclick="submitForm()">Submit</button>
+    </div>
+</body>
+</html>
