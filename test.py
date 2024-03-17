@@ -26,7 +26,7 @@
 #     formatted_number = format_phone_number(number)
 #     unique_phone_numbers.add(formatted_number)
 
-# # Создаем DataFrame из уникальных номеров
+# # Создаем DataFrame из уникальных номеров 
 # df = pd.DataFrame(unique_phone_numbers, columns=['Phone Number'])
 
 # # Сохраняем DataFrame в Excel
@@ -35,6 +35,8 @@
 
 from flask import Flask, request, render_template
 import pandas as pd
+from flask import Flask, request, render_template, send_file
+
 
 app = Flask(__name__)
 
@@ -49,6 +51,7 @@ def format_phone_number(phone_number):
     # Форматирование номера: добавляем пробелы
     formatted_number = ' '.join([cleaned_number[:3], cleaned_number[3:6], cleaned_number[6:]])
     return formatted_number
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -71,9 +74,11 @@ def index():
         # Сохраняем DataFrame в Excel
         df.to_excel('phone_numbers.xlsx', index=False)
         
-        return render_template('output.html', phone_numbers=unique_phone_numbers)
+        # Отправляем файл клиенту для скачивания
+        return send_file('phone_numbers.xlsx', as_attachment=True)
     
     return render_template('input.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
